@@ -2,6 +2,7 @@ package learn;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -16,6 +17,7 @@ import resources.Base;
 
 public class FindBrokenLink extends Base {
 	public WebDriver driver;
+	static List<URL> brokenUrlList = new ArrayList<>();
 
 	@BeforeTest
 	public void BeforeTest() {
@@ -26,9 +28,8 @@ public class FindBrokenLink extends Base {
 	@Test
 	public void findBrokenLinks() throws InterruptedException {
 
-		driver.switchTo().frame("callout");
-
 		// close the popUps
+		driver.switchTo().frame("callout");
 		if (driver.findElement(By.xpath("//button[contains(text(),'No thanks')]")).isDisplayed()) {
 			driver.findElement(By.xpath("//button[contains(text(),'No thanks')]")).click();
 		}
@@ -43,10 +44,13 @@ public class FindBrokenLink extends Base {
 			String url = ele.getAttribute("href");
 			verifyLinkActiveness(url);
 		}
+		String brokenLinkCount = String.valueOf(brokenUrlList.size());
+		Assert.assertTrue(brokenUrlList.size() == 0, "There are " + brokenLinkCount + " broken links on this page.");
 	}
 
 	public static void verifyLinkActiveness(String linkUrl) {
 		try {
+
 			URL url = new URL(linkUrl);
 
 			HttpURLConnection httpURLConnect = (HttpURLConnection) url.openConnection();
@@ -56,13 +60,12 @@ public class FindBrokenLink extends Base {
 			httpURLConnect.connect();
 
 			if (httpURLConnect.getResponseCode() == 200) {
-				// Assert.assertTrue(httpURLConnect.getResponseCode() == 200);
-
+				Assert.assertTrue(httpURLConnect.getResponseCode() == 200);
 				System.out
 						.println(linkUrl + " - " + httpURLConnect.getResponseCode() + " - " + httpURLConnect.getResponseMessage());
 			}
 			if (httpURLConnect.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-				// Assert.assertFalse(true);
+				brokenUrlList.add(url);
 				System.out
 						.println(linkUrl + " - " + httpURLConnect.getResponseMessage() + " - " + HttpURLConnection.HTTP_NOT_FOUND);
 			}
