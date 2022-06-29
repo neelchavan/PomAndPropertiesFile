@@ -3,13 +3,13 @@
 <suite name="Failed suite [Default suite]" guice-stage="DEVELOPMENT">
   <test thread-count="5" name="Default test(failed)">
     <classes>
-      <class name="testcases.LoginPageTest">
+      <class name="learn.FindBrokenLink">
         <methods>
-          <include name="LoginTest"/>
+          <include name="findBrokenLinks"/>
           <include name="tearDown"/>
-          <include name="openFirefoxBroser"/>
+          <include name="BeforeTest"/>
         </methods>
-      </class> <!-- testcases.LoginPageTest -->
+      </class> <!-- learn.FindBrokenLink -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->
